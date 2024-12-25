@@ -1,4 +1,3 @@
--- Удаление таблиц в правильной последовательности
 DROP TABLE IF EXISTS Review CASCADE;
 DROP TABLE IF EXISTS Rating CASCADE;
 DROP TABLE IF EXISTS Subscription CASCADE;
