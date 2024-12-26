@@ -74,4 +74,6 @@ FROM
 WHERE 
     total_fine > 100;
 	
+	
+SELECT * FROM review;
 

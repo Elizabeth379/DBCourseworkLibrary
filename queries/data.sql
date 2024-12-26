@@ -332,3 +332,17 @@ INSERT INTO Fine (fk_borrow_id, amount, reason) VALUES
 INSERT INTO Reading_room (fk_library_id, name, open_hours, seats_amount, phone) VALUES
 (1, 'Лесной', '12:00-4:00', 333, '+79000000000'),
 (2, 'Пляжный', '6:00-21:00', 121, '+79000000000');
+
+INSERT INTO Rating (fk_book_id, score) VALUES
+(11, 5),
+(14, 3),
+(28, 4),
+(26, 4),
+(30, 5);
+
+INSERT INTO Review (fk_reader_id, fk_rating_id, date, text) VALUES
+(1, 2, '2024-06-01', 'Великолепная книга!'),
+(2, 3, '2024-06-01', 'Неплохо'),
+(4, 4, '2024-06-01', 'Только один минус - мелкий шрифт'),
+(3, 6, '2024-06-01', 'Ожидаемая концовка'),
+(7, 5, '2024-06-01', '10 из 10!');
