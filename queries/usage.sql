@@ -51,7 +51,7 @@ JOIN Language ON Book_Language.fk_language_id = Language.id
 WHERE 
     Book.year > 2000;
 
---Найти читателей с общим размером штрафов более 100
+--Найти читателей с общим размером штрафов более 100 - CTE
 
 WITH ReaderFines AS (
     SELECT 

@@ -161,3 +161,265 @@ BEGIN
 END;
 $$;
 
+-- ==========================================================================================
+
+
+
+--  ====================  Жанр  ====================
+
+-- Получение жанра по id
+CREATE OR REPLACE FUNCTION get_genre_by_id(p_id INT)
+RETURNS TABLE(id INT, name VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY SELECT id, name FROM Genre WHERE id = p_id;
+END;
+$$;
+
+-- Удаление жанра
+CREATE OR REPLACE PROCEDURE delete_genre(p_id INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  DELETE FROM Genre WHERE id = p_id;
+END;
+$$;
+
+-- ====================  Категория  ====================
+
+-- Получение категории по id
+CREATE OR REPLACE FUNCTION get_category_by_id(p_id INT)
+RETURNS TABLE(id INT, name VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY SELECT id, name FROM Category WHERE id = p_id;
+END;
+$$;
+
+
+-- Удаление категории
+CREATE OR REPLACE PROCEDURE delete_category(p_id INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  DELETE FROM Category WHERE id = p_id;
+END;
+$$;
+
+--  ====================  Предмет  ====================
+
+-- Получение предмета по id
+CREATE OR REPLACE FUNCTION get_subject_by_id(p_id INT)
+RETURNS TABLE(id INT, name VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY SELECT id, name FROM Subject WHERE id = p_id;
+END;
+$$;
+
+-- Удаление предмета
+CREATE OR REPLACE PROCEDURE delete_subject(p_id INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  DELETE FROM Subject WHERE id = p_id;
+END;
+$$;
+
+--  ====================  Издатель  ====================
+
+
+-- Получение издателя по id
+CREATE OR REPLACE FUNCTION get_publisher_by_id(p_id INT)
+RETURNS TABLE(id INT, name VARCHAR, city VARCHAR, country VARCHAR, email VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY SELECT id, name, city, country, email FROM Publisher WHERE id = p_id;
+END;
+$$;
+
+-- Удаление издателя
+CREATE OR REPLACE PROCEDURE delete_publisher(p_id INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  DELETE FROM Publisher WHERE id = p_id;
+END;
+$$;
+
+-- ====================  Автор  ====================
+
+-- Получение автора по id
+CREATE OR REPLACE FUNCTION get_author_by_id(p_id INT)
+RETURNS TABLE(id INT, last_name VARCHAR, first_name VARCHAR, birthdate DATE, country VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY SELECT id, last_name, first_name, birthdate, country FROM Author WHERE id = p_id;
+END;
+$$;
+
+-- Обновление автора
+CREATE OR REPLACE PROCEDURE update_author(p_id INT, p_last_name VARCHAR, p_first_name VARCHAR, p_birthdate DATE, p_country VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  UPDATE Author SET last_name = p_last_name, first_name = p_first_name, birthdate = p_birthdate, country = p_country WHERE id = p_id;
+END;
+$$;
+
+-- Удаление автора
+CREATE OR REPLACE PROCEDURE delete_author(p_id INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  DELETE FROM Author WHERE id = p_id;
+END;
+$$;
+
+--  ====================  Книга  ====================
+-- Получение книги по id
+CREATE OR REPLACE FUNCTION get_book_by_id(p_id INT)
+RETURNS TABLE(id INT, fk_subject_id INT, fk_genre_id INT, fk_category_id INT, title VARCHAR, page_count INT, year INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY SELECT id, fk_subject_id, fk_genre_id, fk_category_id, title, page_count, year FROM Book WHERE id = p_id;
+END;
+$$;
+
+-- Обновление книги
+CREATE OR REPLACE PROCEDURE update_book(p_id INT, p_fk_subject_id INT, p_fk_genre_id INT, p_fk_category_id INT, p_title VARCHAR, p_page_count INT, p_year INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  UPDATE Book SET fk_subject_id = p_fk_subject_id, fk_genre_id = p_fk_genre_id, fk_category_id = p_fk_category_id, title = p_title, page_count = p_page_count, year = p_year WHERE id = p_id;
+END;
+$$;
+
+-- Удаление книги
+CREATE OR REPLACE PROCEDURE delete_book(p_id INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  DELETE FROM Book WHERE id = p_id;
+END;
+$$;
+
+-- Получение авторов книги
+CREATE OR REPLACE FUNCTION get_authors_of_book(p_book_id INT)
+RETURNS TABLE(author_id INT, last_name VARCHAR, first_name VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT a.id, a.last_name, a.first_name
+    FROM Author a
+    JOIN Author_Book ab ON a.id = ab.fk_author_id
+    WHERE ab.fk_book_id = p_book_id;
+END;
+$$;
+
+-- Получение книг автора
+CREATE OR REPLACE FUNCTION get_books_of_author(p_author_id INT)
+RETURNS TABLE(book_id INT, book_title VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT b.id, b.title
+    FROM Book b
+    JOIN Author_Book ab ON b.id = ab.fk_book_id
+    WHERE ab.fk_author_id = p_author_id;
+END;
+$$;
+
+-- Получение языков книги
+CREATE OR REPLACE FUNCTION get_languages_of_book(p_book_id INT)
+RETURNS TABLE(language_id INT, language_name VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT l.id, l.name
+    FROM Language l
+    JOIN Book_Language bl ON l.id = bl.fk_language_id
+    WHERE bl.fk_book_id = p_book_id;
+END;
+$$;
+
+-- Получение книг по языку
+CREATE OR REPLACE FUNCTION get_books_of_language(p_language_id INT)
+RETURNS TABLE(book_id INT, book_title VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT b.id, b.title
+    FROM Book b
+    JOIN Book_Language bl ON b.id = bl.fk_book_id
+    WHERE bl.fk_language_id = p_language_id;
+END;
+$$;
+
+-- Получение тегов книги
+CREATE OR REPLACE FUNCTION get_tags_of_book(p_book_id INT)
+RETURNS TABLE(tag_id INT, tag_name VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT t.id, t.name
+    FROM Tag t
+    JOIN Book_Tag bt ON t.id = bt.fk_tag_id
+    WHERE bt.fk_book_id = p_book_id;
+END;
+$$;
+
+-- Получение книг по тегу
+CREATE OR REPLACE FUNCTION get_books_of_tag(p_tag_id INT)
+RETURNS TABLE(book_id INT, book_title VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT b.id, b.title
+    FROM Book b
+    JOIN Book_Tag bt ON b.id = bt.fk_book_id
+    WHERE bt.fk_tag_id = p_tag_id;
+END;
+$$;
+
+--  ====================  Читатель  ====================
+
+-- Получение читателя по id
+CREATE OR REPLACE FUNCTION get_reader_by_id(p_id INT)
+RETURNS TABLE(id INT, nickname VARCHAR, first_name VARCHAR, last_name VARCHAR, email VARCHAR, phone VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY SELECT id, nickname, first_name, last_name, email, phone FROM Reader WHERE id = p_id;
+END;
+$$;
+
+-- Обновление читателя
+CREATE OR REPLACE PROCEDURE update_reader(p_id INT, p_nickname VARCHAR, p_first_name VARCHAR, p_last_name VARCHAR, p_email VARCHAR, p_phone VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  UPDATE Reader SET nickname = p_nickname, first_name = p_first_name, last_name = p_last_name, email = p_email, phone = p_phone WHERE id = p_id;
+END;
+$$;
+
+-- Удаление читателя
+CREATE OR REPLACE PROCEDURE delete_reader(p_id INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  DELETE FROM Reader WHERE id = p_id;
+END;
+$$;

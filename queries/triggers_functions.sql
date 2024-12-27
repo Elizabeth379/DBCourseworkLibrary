@@ -138,8 +138,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- ===========================================================================
-
 CREATE TRIGGER positive_subscription_price_check
 BEFORE INSERT OR UPDATE ON Subscription
 FOR EACH ROW
