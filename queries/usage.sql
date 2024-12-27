@@ -75,5 +75,19 @@ WHERE
     total_fine > 100;
 	
 	
-SELECT * FROM review;
+SELECT * FROM rating;
 
+INSERT INTO Rating (fk_book_id, score) VALUES
+(11, 10);
+
+INSERT INTO Subscription (fk_library_card_id, fk_type_id, name, price, expire_date) VALUES
+(1, 1, 'Базовый', -100, '2024-12-31');
+
+CALL add_rating(p_fk_book_id := 26, p_score := 5);
+
+-- Insert data into Exemplar
+INSERT INTO Exemplar (fk_book_id, fk_publisher_id, fk_availability_id, isbn, year) VALUES
+(11, 11, 11, 123456789, 1937);
+
+INSERT INTO Availability (quantity) VALUES
+(-500);
